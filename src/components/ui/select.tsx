@@ -23,8 +23,13 @@ export function Select({ options, placeholder = "Pilih...", value, onChange }: S
   const handleSelect = (val: string) => {
     setInternalValue(val);
     if (onChange) onChange(val);
-    setOpen(false);
   };
+
+  useEffect(() => {
+    if (selectedValue !== undefined) {
+      setOpen(false);
+    }
+  }, [selectedValue]);
 
   useEffect(() => {
     if (!open) return;
@@ -77,7 +82,11 @@ export function Select({ options, placeholder = "Pilih...", value, onChange }: S
                 "select-option" +
                 (opt.value === selectedValue ? " select-option-selected" : "")
               }
-              onClick={() => handleSelect(opt.value)}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                handleSelect(opt.value);
+              }}
             >
               {opt.label}
             </button>
