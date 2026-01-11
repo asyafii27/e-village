@@ -129,6 +129,7 @@ function App() {
   const [selectedLetterType, setSelectedLetterType] = useState<string | null>(
     null
   );
+  const [showResidentModal, setShowResidentModal] = useState<boolean>(false);
 
   const current = MENUS.find((m) => m.id === activeMenu) ?? MENUS[0];
 
@@ -351,49 +352,162 @@ function App() {
           )}
 
           {activeMenu === "kependudukan" && (
-            <Card title="Data Warga Desa Sugihan" className="dashboard-warga-card">
-              <div className="table-wrapper">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Nama</TableHead>
-                      <TableHead>NIK</TableHead>
-                      <TableHead>Gender</TableHead>
-                      <TableHead>Agama</TableHead>
-                      <TableHead>Tempat, Tanggal Lahir</TableHead>
-                      <TableHead>RT</TableHead>
-                      <TableHead>RW</TableHead>
-                      <TableHead>Desa</TableHead>
-                      <TableHead>Status Perkawinan</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Contoh Warga 1</TableCell>
-                      <TableCell>3378xxxxxxxxxxxx</TableCell>
-                      <TableCell>L</TableCell>
-                      <TableCell>Islam</TableCell>
-                      <TableCell>Pati, 01-01-1990</TableCell>
-                      <TableCell>01</TableCell>
-                      <TableCell>01</TableCell>
-                      <TableCell>Sugihan</TableCell>
-                      <TableCell>Kawin</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Contoh Warga 2</TableCell>
-                      <TableCell>3378xxxxxxxxxxxx</TableCell>
-                      <TableCell>P</TableCell>
-                      <TableCell>Islam</TableCell>
-                      <TableCell>Pati, 12-05-1995</TableCell>
-                      <TableCell>02</TableCell>
-                      <TableCell>03</TableCell>
-                      <TableCell>Sugihan</TableCell>
-                      <TableCell>Belum Kawin</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
+            <>
+              <Card title="Data Warga Desa Sugihan" className="dashboard-warga-card">
+                <div className="kependudukan-header">
+                  <p className="kependudukan-summary">
+                    Berikut adalah daftar ringkas warga Desa Sugihan. Gunakan tombol di bawah ini untuk menambahkan data penduduk baru.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={() => setShowResidentModal(true)}
+                  >
+                    Tambah Data Warga
+                  </Button>
+                </div>
+                <div className="table-wrapper">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nama</TableHead>
+                        <TableHead>NIK</TableHead>
+                        <TableHead>Gender</TableHead>
+                        <TableHead>Agama</TableHead>
+                        <TableHead>Tempat, Tanggal Lahir</TableHead>
+                        <TableHead>RT</TableHead>
+                        <TableHead>RW</TableHead>
+                        <TableHead>Desa</TableHead>
+                        <TableHead>Status Perkawinan</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Contoh Warga 1</TableCell>
+                        <TableCell>3378xxxxxxxxxxxx</TableCell>
+                        <TableCell>L</TableCell>
+                        <TableCell>Islam</TableCell>
+                        <TableCell>Pati, 01-01-1990</TableCell>
+                        <TableCell>01</TableCell>
+                        <TableCell>01</TableCell>
+                        <TableCell>Sugihan</TableCell>
+                        <TableCell>Kawin</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Contoh Warga 2</TableCell>
+                        <TableCell>3378xxxxxxxxxxxx</TableCell>
+                        <TableCell>P</TableCell>
+                        <TableCell>Islam</TableCell>
+                        <TableCell>Pati, 12-05-1995</TableCell>
+                        <TableCell>02</TableCell>
+                        <TableCell>03</TableCell>
+                        <TableCell>Sugihan</TableCell>
+                        <TableCell>Belum Kawin</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </Card>
+
+              {showResidentModal && (
+                <div className="modal-backdrop" role="dialog" aria-modal="true">
+                  <div className="modal-card">
+                    <div className="modal-header">
+                      <h2 className="modal-title">Tambah Data Warga</h2>
+                      <button
+                        type="button"
+                        className="btn-base btn-ghost modal-close"
+                        onClick={() => setShowResidentModal(false)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <form
+                      className="modal-form"
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        setShowResidentModal(false);
+                      }}
+                    >
+                      <div className="modal-grid">
+                        <label className="login-field">
+                          <span>Nama Lengkap</span>
+                          <input type="text" placeholder="Masukkan nama warga" required />
+                        </label>
+                        <label className="login-field">
+                          <span>NIK</span>
+                          <input type="text" placeholder="Masukkan NIK" required />
+                        </label>
+                        <label className="login-field">
+                          <span>Jenis Kelamin</span>
+                          <select defaultValue="" required>
+                            <option value="" disabled>
+                              Pilih jenis kelamin
+                            </option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                          </select>
+                        </label>
+                        <label className="login-field">
+                          <span>Agama</span>
+                          <select defaultValue="" required>
+                            <option value="" disabled>
+                              Pilih agama
+                            </option>
+                            <option value="Islam">Islam</option>
+                            <option value="Kristen">Kristen</option>
+                            <option value="Katolik">Katolik</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Buddha">Buddha</option>
+                            <option value="Konghucu">Konghucu</option>
+                          </select>
+                        </label>
+                        <label className="login-field">
+                          <span>Tempat Lahir</span>
+                          <input type="text" placeholder="Masukkan tempat lahir" required />
+                        </label>
+                        <label className="login-field">
+                          <span>Tanggal Lahir</span>
+                          <input type="date" required />
+                        </label>
+                        <label className="login-field">
+                          <span>RT</span>
+                          <input type="text" placeholder="RT" required />
+                        </label>
+                        <label className="login-field">
+                          <span>RW</span>
+                          <input type="text" placeholder="RW" required />
+                        </label>
+                        <label className="login-field">
+                          <span>Desa</span>
+                          <input type="text" defaultValue="Sugihan" required />
+                        </label>
+                        <label className="login-field">
+                          <span>Status Perkawinan</span>
+                          <select defaultValue="" required>
+                            <option value="" disabled>
+                              Pilih status
+                            </option>
+                            <option value="Belum Kawin">Belum Kawin</option>
+                            <option value="Kawin">Kawin</option>
+                            <option value="Cerai Hidup">Cerai Hidup</option>
+                            <option value="Cerai Mati">Cerai Mati</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div className="modal-actions">
+                        <Button type="button" variant="ghost" onClick={() => setShowResidentModal(false)}>
+                          Batal
+                        </Button>
+                        <Button type="submit" variant="primary">
+                          Simpan Data
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {activeMenu !== "dashboard" &&

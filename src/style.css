@@ -406,6 +406,20 @@ body {
   grid-column: 1 / -1;
 }
 
+.kependudukan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.kependudukan-summary {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -463,6 +477,61 @@ body {
 
 .ui-table tbody tr:nth-child(even) {
   background-color: #f9fafb;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 720px;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.4);
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.modal-close {
+  padding-inline: 0.4rem;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 .surat-card {
