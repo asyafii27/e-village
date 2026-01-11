@@ -126,6 +126,225 @@ body {
   width: 100%;
 }
 
+/* Input tanggal dan select dengan gaya hijau kustom */
+.login-field select,
+.modal-grid select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  border-color: rgba(34, 197, 94, 0.7);
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2316A34A' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 1rem 1rem;
+}
+
+.login-field select:focus,
+.modal-grid select:focus {
+  outline: 2px solid rgba(34, 197, 94, 0.4);
+  border-color: rgba(34, 197, 94, 0.9);
+}
+
+.login-field input[type="date"],
+.modal-grid input[type="date"] {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(34, 197, 94, 0.7);
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.login-field input[type="date"]::-webkit-calendar-picker-indicator,
+.modal-grid input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: hue-rotate(70deg) saturate(1.4);
+}
+
+/* Custom Select */
+.select-root {
+  position: relative;
+}
+
+.select-trigger {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(34, 197, 94, 0.7);
+  background-color: #ffffff;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.select-value {
+  color: var(--text-main);
+}
+
+.select-placeholder {
+  color: var(--text-muted);
+}
+
+.select-caret {
+  margin-left: 0.5rem;
+  color: #16a34a;
+}
+
+.select-menu {
+  position: absolute;
+  inset-inline: 0;
+  margin-top: 0.25rem;
+  background-color: #ffffff;
+  border-radius: 0.6rem;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.24);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 30;
+}
+
+.select-option {
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.88rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.select-option:hover {
+  background-color: rgba(134, 239, 172, 0.35);
+}
+
+.select-option-selected {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Custom Date Picker */
+.date-picker-root {
+  position: relative;
+}
+
+.date-picker-trigger {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(34, 197, 94, 0.7);
+  background-color: #ffffff;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.date-picker-value {
+  color: var(--text-main);
+}
+
+.date-picker-placeholder {
+  color: var(--text-muted);
+}
+
+.date-picker-icon {
+  margin-left: 0.5rem;
+}
+
+.date-picker-popover {
+  position: absolute;
+  right: 0;
+  margin-top: 0.3rem;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.24);
+  padding: 0.6rem 0.7rem 0.7rem;
+  z-index: 35;
+  min-width: 260px;
+}
+
+.date-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.date-picker-month {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.date-picker-nav {
+  padding-inline: 0.4rem;
+}
+
+.date-picker-month-select,
+.date-picker-year-select {
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background-color: #f9fafb;
+  padding: 0.2rem 1.5rem 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7L10 12L15 7' stroke='%2316A34A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+  background-size: 12px 12px;
+}
+
+.date-picker-month-select:focus,
+.date-picker-year-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25);
+}
+
+.date-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+  font-size: 0.75rem;
+}
+
+.date-picker-weekday {
+  text-align: center;
+  color: var(--text-muted);
+  padding-bottom: 0.15rem;
+}
+
+.date-picker-day {
+  border: none;
+  background-color: transparent;
+  border-radius: 999px;
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+
+.date-picker-day:hover {
+  background-color: rgba(134, 239, 172, 0.4);
+}
+
+.date-picker-day-selected {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.date-picker-day.empty {
+  pointer-events: none;
+}
+
 .app-root {
   min-height: 100vh;
   display: flex;

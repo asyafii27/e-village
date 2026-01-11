@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "./components/ui/table";
+import { Select } from "./components/ui/select";
+import { DatePicker } from "./components/ui/date-picker";
 
 const MENUS: { id: string; label: string; description: string }[] = [
   {
@@ -440,27 +442,27 @@ function App() {
                         </label>
                         <label className="login-field">
                           <span>Jenis Kelamin</span>
-                          <select defaultValue="" required>
-                            <option value="" disabled>
-                              Pilih jenis kelamin
-                            </option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
-                          </select>
+                          <Select
+                            placeholder="Pilih jenis kelamin"
+                            options={[
+                              { value: "L", label: "Laki-laki" },
+                              { value: "P", label: "Perempuan" },
+                            ]}
+                          />
                         </label>
                         <label className="login-field">
                           <span>Agama</span>
-                          <select defaultValue="" required>
-                            <option value="" disabled>
-                              Pilih agama
-                            </option>
-                            <option value="Islam">Islam</option>
-                            <option value="Kristen">Kristen</option>
-                            <option value="Katolik">Katolik</option>
-                            <option value="Hindu">Hindu</option>
-                            <option value="Buddha">Buddha</option>
-                            <option value="Konghucu">Konghucu</option>
-                          </select>
+                          <Select
+                            placeholder="Pilih agama"
+                            options={[
+                              { value: "Islam", label: "Islam" },
+                              { value: "Kristen", label: "Kristen" },
+                              { value: "Katolik", label: "Katolik" },
+                              { value: "Hindu", label: "Hindu" },
+                              { value: "Buddha", label: "Buddha" },
+                              { value: "Konghucu", label: "Konghucu" },
+                            ]}
+                          />
                         </label>
                         <label className="login-field">
                           <span>Tempat Lahir</span>
@@ -468,7 +470,7 @@ function App() {
                         </label>
                         <label className="login-field">
                           <span>Tanggal Lahir</span>
-                          <input type="date" required />
+                          <DatePicker placeholder="dd/mm/yyyy" />
                         </label>
                         <label className="login-field">
                           <span>RT</span>
@@ -484,15 +486,15 @@ function App() {
                         </label>
                         <label className="login-field">
                           <span>Status Perkawinan</span>
-                          <select defaultValue="" required>
-                            <option value="" disabled>
-                              Pilih status
-                            </option>
-                            <option value="Belum Kawin">Belum Kawin</option>
-                            <option value="Kawin">Kawin</option>
-                            <option value="Cerai Hidup">Cerai Hidup</option>
-                            <option value="Cerai Mati">Cerai Mati</option>
-                          </select>
+                          <Select
+                            placeholder="Pilih status"
+                            options={[
+                              { value: "Belum Kawin", label: "Belum Kawin" },
+                              { value: "Kawin", label: "Kawin" },
+                              { value: "Cerai Hidup", label: "Cerai Hidup" },
+                              { value: "Cerai Mati", label: "Cerai Mati" },
+                            ]}
+                          />
                         </label>
                       </div>
                       <div className="modal-actions">
