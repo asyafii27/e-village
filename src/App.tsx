@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./style.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { LoginPage } from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
@@ -31,13 +33,13 @@ import {
   Settings,
 } from "lucide-react";
 
-/* =====================
-   MENU CONFIG
-===================== */
-
 const MENUS = [
   { id: "dashboard", label: "Dashboard", description: "Ringkasan data desa" },
-  { id: "kependudukan", label: "Kependudukan", description: "Data penduduk desa" },
+  {
+    id: "kependudukan",
+    label: "Kependudukan",
+    description: "Data penduduk desa",
+  },
   { id: "persuratan", label: "Persuratan", description: "Layanan surat desa" },
   { id: "pengaturan", label: "Pengaturan", description: "Pengaturan sistem" },
 ];
@@ -49,15 +51,7 @@ const MENU_ICONS: Record<string, LucideIcon> = {
   pengaturan: Settings,
 };
 
-/* =====================
-   PROTECTED LAYOUT
-===================== */
-
-function AppLayout({
-  onLogout,
-}: {
-  onLogout: () => void;
-}) {
+function AppLayout({ onLogout }: { onLogout: () => void }) {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -139,33 +133,32 @@ function AppLayout({
   );
 }
 
-/* =====================
-   APP ROOT
-===================== */
-
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/login"
-          element={<LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />}
-        />
-        <Route path="/register" element={<RegisterPage />} />
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/login"
+            element={<LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />}
+          />
+          <Route path="/register" element={<RegisterPage />} />
 
-        <Route
-          path="/*"
-          element={
-            isLoggedIn ? (
-              <AppLayout onLogout={() => setIsLoggedIn(false)} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/*"
+            element={
+              isLoggedIn ? (
+                <AppLayout onLogout={() => setIsLoggedIn(false)} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer position="top-right" autoClose={6000} />
+    </>
   );
 }

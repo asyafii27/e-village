@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Toastify Error Style - warna lebih lembut */
+.toastify-error {
+  background: #fdf3f3 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #b91c1c !important;
+  font-size: 1rem;
+  font-family: inherit;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+  padding: 12px 18px !important;
+  display: flex;
+  align-items: center;
+}
+.toastify-error .toastify-icon {
+  margin-right: 8px;
+  color: #f87171;
+  font-size: 20px;
+}
+.toastify-error .toastify-title {
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+/* Custom Toastify Success Style - warna lebih lembut */
+.toastify-success {
+  background: #f3fdf6 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #166534 !important;
+  font-size: 1rem;
+  font-family: inherit;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+  padding: 12px 18px !important;
+  display: flex;
+  align-items: center;
+}
+.toastify-success .toastify-icon {
+  margin-right: 8px;
+  color: #4ade80;
+  font-size: 20px;
+}
+.toastify-success .toastify-title {
+  font-weight: bold;
+  margin-right: 6px;
+}

@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { User, Mail, Lock, KeyRound } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  KeyRound,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import axios from "axios";
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { useNavigate } from "react-router-dom";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+import { toast } from "react-toastify";
+import { ToastrError, ToastrSuccess } from "../../components/ui/Toastr";
 
 const RegisterPage: React.FC = () => {
   const [form, setForm] = useState({
@@ -13,6 +24,7 @@ const RegisterPage: React.FC = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,13 +47,21 @@ const RegisterPage: React.FC = () => {
         password: form.password,
         password_confirmation: form.confirmPassword,
       });
-      setSuccess(res.data.message || "Registrasi berhasil! Silakan login.");
+      toast.success(<ToastrSuccess message={res.message} />, {
+        className: "toastify-success",
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (err: any) {
-      setError(
+      const errMessage =
         err?.response?.data?.message ||
-          err?.response?.data?.error ||
-          "Registrasi Gagal. Silakan hubungi administrator"
-      );
+        err?.response?.data?.error ||
+        "Registrasi Gagal. Silakan hubungi administrator";
+
+      toast.error(<ToastrError message={errMessage} />, {
+        className: "toastify-error",
+      });
     }
   };
 
@@ -51,6 +71,24 @@ const RegisterPage: React.FC = () => {
         <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">
           Register Akun
         </h2>
+        {/* Alert Error */}
+        {error && (
+          <div className="flex items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <AlertCircle className="mr-2" size={20} />
+            <span>
+              <strong className="font-bold">Error:</strong> {error}
+            </span>
+          </div>
+        )}
+        {/* Alert Success */}
+        {success && (
+          <div className="flex items-center bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <CheckCircle className="mr-2" size={20} />
+            <span>
+              <strong className="font-bold">Success:</strong> {success}
+            </span>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -124,8 +162,6 @@ const RegisterPage: React.FC = () => {
               />
             </div>
           </div>
-          {error && <div className="text-red-500 text-sm">{error}</div>}
-          {success && <div className="text-green-600 text-sm">{success}</div>}
           <button
             type="submit"
             className="w-full py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition"
