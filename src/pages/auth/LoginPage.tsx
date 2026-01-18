@@ -9,7 +9,7 @@ interface LoginPageProps {
   onLoginSuccess: () => void;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     setError(null);
     setLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/api/login`, {
+      await axios.post(`${API_BASE_URL}/login`, {
         email,
         password,
       });
