@@ -42,6 +42,7 @@ const MENUS = [
   },
   { id: "persuratan", label: "Persuratan", description: "Layanan surat desa" },
   { id: "pengaturan", label: "Pengaturan", description: "Pengaturan sistem" },
+  { id: "user", label: "Pengguna", description: "Daftar Pengguna" },
 ];
 
 const MENU_ICONS: Record<string, LucideIcon> = {
@@ -49,6 +50,7 @@ const MENU_ICONS: Record<string, LucideIcon> = {
   kependudukan: Users,
   persuratan: FileText,
   pengaturan: Settings,
+  user: Users,
 };
 
 function AppLayout({ onLogout }: { onLogout: () => void }) {
@@ -68,7 +70,10 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
           activeMenu={activeMenu}
           onSelectMenu={setActiveMenu}
           onLogout={onLogout}
-          menuIcons={MENU_ICONS}
+          menuIcons={(() => {
+            console.log("MENU_ICONS:", MENU_ICONS); // Debugging log
+            return MENU_ICONS;
+          })()}
         />
       )}
 

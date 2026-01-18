@@ -97,7 +97,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
             className="w-full py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition"
             disabled={loading}
           >
-            {loading ? "Memproses..." : "Masuk ke Sistem"}
+            {loading ? "Memproses..." : "Login"}
           </Button>
         </form>
         <div className="text-center mt-4">

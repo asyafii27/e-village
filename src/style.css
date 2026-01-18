@@ -47,3 +47,57 @@
   font-weight: bold;
   margin-right: 6px;
 }
+
+/* Sidebar Logout Button Style */
+.sidebar-logout-btn {
+  color: #dc2626;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.sidebar-logout-btn:hover {
+  background: #dc2626;
+  color: #fff;
+}
+.sidebar-logout-btn:hover .menu-icon svg {
+  color: #fff;
+}
+
+/* Sidebar Menu Item Style */
+.sidebar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Jarak antara ikon dan label */
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap; /* Mencegah teks terpotong ke baris berikutnya */
+  width: 100%; /* Memastikan menu memenuhi lebar penuh */
+}
+
+.sidebar-menu-item .menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-menu-item .menu-label {
+  flex: 1;
+  text-align: left;
+}
+
+.sidebar-menu-item.active {
+  background: #16a34a !important; /* Hijau lebih tebal */
+  color: #fff !important; /* Font putih */
+  font-weight: bold;
+  width: 100%; /* Memastikan background hijau memenuhi lebar penuh */
+}
+
+.sidebar-menu-item.active:hover {
+  background: #15803d !important; /* Hijau lebih gelap saat hover */
+}

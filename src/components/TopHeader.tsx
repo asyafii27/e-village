@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronLeft, ChevronRight, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, LogOut } from "lucide-react";
 
 interface TopHeaderProps {
   sidebarOpen: boolean;
@@ -8,14 +8,22 @@ interface TopHeaderProps {
   onLogout: () => void;
 }
 
-export function TopHeader({ sidebarOpen, onToggleSidebar, userName, onLogout }: TopHeaderProps) {
+export function TopHeader({
+  sidebarOpen,
+  onToggleSidebar,
+  userName,
+  onLogout,
+}: TopHeaderProps) {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!profileOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node)
+      ) {
         setProfileOpen(false);
       }
     };
@@ -39,8 +47,12 @@ export function TopHeader({ sidebarOpen, onToggleSidebar, userName, onLogout }: 
           )}
         </button>
         <div>
-          <div className="text-lg font-bold text-green-700">Sistem Manajemen Desa Sugihan</div>
-          <div className="text-sm text-gray-500">Kec. Winong, Kab. Pati, Jawa Tengah</div>
+          <div className="text-lg font-bold text-green-700">
+            Sistem Manajemen Desa Sugihan
+          </div>
+          <div className="text-sm text-gray-500">
+            Kec. Winong, Kab. Pati, Jawa Tengah
+          </div>
         </div>
       </div>
       <div className="relative" ref={profileRef}>
@@ -59,16 +71,24 @@ export function TopHeader({ sidebarOpen, onToggleSidebar, userName, onLogout }: 
               <div className="font-semibold text-green-700">{userName}</div>
               <div className="text-xs text-gray-500">Operator Sistem</div>
             </div>
-            <button type="button" className="w-full text-left px-4 py-2 hover:bg-green-50 text-gray-700">
-              Lihat Profil
-            </button>
             <button
               type="button"
-              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold"
-              onClick={onLogout}
+              className="w-full text-left px-4 py-2 hover:bg-green-50 text-gray-700"
             >
-              Keluar
+              Lihat Profil
             </button>
+            <div className="px-6 py-4 border-t border-green-200">
+              <button
+                type="button"
+                className="sidebar-logout-btn"
+                onClick={onLogout}
+              >
+                <span className="menu-icon">
+                  <LogOut size={14} />
+                </span>
+                <span className="menu-label">Log Out</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
