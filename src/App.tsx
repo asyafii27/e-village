@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./style.css";
-import { Button } from "./components/ui/button";
-import { Card } from "./components/ui/card";
-import { LoginPage } from "./pages/LoginPage";
+
+import { LoginPage } from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import { Sidebar } from "./components/Sidebar";
 import { TopHeader } from "./components/TopHeader";
+import { Card } from "./components/ui/card";
 import {
   Table,
   TableBody,
@@ -13,8 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "./components/ui/table";
-import { Select } from "./components/ui/select";
-import { DatePicker } from "./components/ui/date-picker";
+
 import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
@@ -30,112 +31,67 @@ import {
   Settings,
 } from "lucide-react";
 
+/* =====================
+   MENU CONFIG
+===================== */
 
-
-const MENUS: { id: string; label: string; description: string }[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    description: "Ringkasan data dan aktivitas utama Desa Sugihan.",
-  },
-  {
-    id: "kependudukan",
-    label: "Administrasi Kependudukan",
-    description: "Data penduduk, KK, dan mutasi warga.",
-  },
-  {
-    id: "persuratan",
-    label: "Layanan Persuratan",
-    description: "Pengajuan dan arsip surat keterangan desa.",
-  },
-  {
-    id: "data-desa",
-    label: "Data Desa",
-    description: "Profil Desa Sugihan, fasilitas umum, dan lembaga desa.",
-  },
-  {
-    id: "keuangan",
-    label: "Keuangan & APBDes",
-    description: "Rencana dan realisasi anggaran desa.",
-  },
-  {
-    id: "pembangunan",
-    label: "Pembangunan & Infrastruktur",
-    description: "Perencanaan dan monitoring kegiatan pembangunan.",
-  },
-  {
-    id: "sosial",
-    label: "Layanan Sosial & Kesehatan",
-    description: "Data bantuan sosial dan kegiatan kesehatan desa.",
-  },
-  {
-    id: "umkm",
-    label: "UMKM & Ekonomi Desa",
-    description: "Data UMKM dan produk unggulan Desa Sugihan.",
-  },
-  {
-    id: "aduan",
-    label: "Aduan & Aspirasi Warga",
-    description: "Penyaluran aduan dan aspirasi masyarakat.",
-  },
-  {
-    id: "arsip",
-    label: "Laporan & Arsip",
-    description: "Laporan berkala dan arsip dokumen desa.",
-  },
-  {
-    id: "pengaturan",
-    label: "Pengaturan Sistem",
-    description: "Pengelolaan pengguna, nomor surat, dan konfigurasi sistem.",
-  },
+const MENUS = [
+  { id: "dashboard", label: "Dashboard", description: "Ringkasan data desa" },
+  { id: "kependudukan", label: "Kependudukan", description: "Data penduduk desa" },
+  { id: "persuratan", label: "Persuratan", description: "Layanan surat desa" },
+  { id: "pengaturan", label: "Pengaturan", description: "Pengaturan sistem" },
 ];
 
 const MENU_ICONS: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
   kependudukan: Users,
   persuratan: FileText,
-  "data-desa": Map,
-  keuangan: Wallet,
-  pembangunan: Hammer,
-  sosial: HeartPulse,
-  umkm: Store,
-  aduan: MessageCircle,
-  arsip: Archive,
   pengaturan: Settings,
 };
 
-export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+/* =====================
+   PROTECTED LAYOUT
+===================== */
+
+function AppLayout({
+  onLogout,
+}: {
+  onLogout: () => void;
+}) {
   const [activeMenu, setActiveMenu] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  if (!isLoggedIn) {
-    return <LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />;
-  }
-
-  const current = MENUS.find((m) => m.id === activeMenu)!;
+  const currentMenu = useMemo(
+    () => MENUS.find((m) => m.id === activeMenu),
+    [activeMenu]
+  );
 
   return (
-    <div className={"app-layout" + (sidebarOpen ? "" : " app-layout-full") }>
-      <Sidebar
-        menus={MENUS}
-        activeMenu={activeMenu}
-        onSelectMenu={setActiveMenu}
-        onLogout={() => setIsLoggedIn(false)}
-        menuIcons={MENU_ICONS}
-        className={sidebarOpen ? '' : 'sidebar-hidden'}
-      />
-      <div className={sidebarOpen ? 'main-area' : 'main-area main-area-full'}>
+    <div className="min-h-screen flex bg-gray-50">
+      {sidebarOpen && (
+        <Sidebar
+          menus={MENUS}
+          activeMenu={activeMenu}
+          onSelectMenu={setActiveMenu}
+          onLogout={onLogout}
+          menuIcons={MENU_ICONS}
+        />
+      )}
+
+      <div className="flex-1 flex flex-col">
         <TopHeader
           sidebarOpen={sidebarOpen}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           userName="Sekretariat Desa Sugihan"
-          onLogout={() => setIsLoggedIn(false)}
+          onLogout={onLogout}
         />
-        <main className="main-content">
-          <header className="main-header">
-            <h1>{current.label}</h1>
-            <p>{current.description}</p>
+
+        <main className="flex-1 p-8">
+          <header className="mb-6">
+            <h1 className="text-2xl font-bold text-green-700">
+              {currentMenu?.label}
+            </h1>
+            <p className="text-gray-600">{currentMenu?.description}</p>
           </header>
 
           {/* CONTENT */}
@@ -149,37 +105,67 @@ export default function App() {
             <Card title="Data Warga">
               <Table>
                 <TableHeader>
-                <TableRow>
-                  <TableHead>Nama</TableHead>
-                  <TableHead>NIK</TableHead>
-                  <TableHead>Gender</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Contoh Warga</TableCell>
-                  <TableCell>3378xxxxxxxx</TableCell>
-                  <TableCell>L</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Card>
-        )}
+                  <TableRow>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>NIK</TableHead>
+                    <TableHead>Gender</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Contoh Warga</TableCell>
+                    <TableCell>3378xxxxxxxx</TableCell>
+                    <TableCell>L</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Card>
+          )}
 
-        {activeMenu === "persuratan" && (
-          <Card title="Persuratan">
-            <p>Daftar layanan surat akan tampil di sini.</p>
-          </Card>
-        )}
+          {activeMenu === "persuratan" && (
+            <Card title="Persuratan">
+              <p>Daftar layanan surat akan tampil di sini.</p>
+            </Card>
+          )}
 
-        {activeMenu === "pengaturan" && (
-          <Card title="Pengaturan">
-            <p>Pengaturan sistem aplikasi.</p>
-          </Card>
-        )}
-        {/* ...existing code... */}
+          {activeMenu === "pengaturan" && (
+            <Card title="Pengaturan">
+              <p>Pengaturan sistem aplikasi.</p>
+            </Card>
+          )}
         </main>
       </div>
     </div>
+  );
+}
+
+/* =====================
+   APP ROOT
+===================== */
+
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={<LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />}
+        />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route
+          path="/*"
+          element={
+            isLoggedIn ? (
+              <AppLayout onLogout={() => setIsLoggedIn(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }

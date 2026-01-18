@@ -24,57 +24,53 @@ export function TopHeader({ sidebarOpen, onToggleSidebar, userName, onLogout }: 
   }, [profileOpen]);
 
   return (
-    <header className="top-header">
-      <div className="top-header-left">
+    <header className="w-full bg-white shadow flex items-center justify-between px-6 py-4">
+      <div className="flex items-center gap-4">
         <button
-          className="top-header-toggle"
+          className="p-2 rounded hover:bg-green-100 text-green-700"
           type="button"
           onClick={onToggleSidebar}
           title={sidebarOpen ? "Sembunyikan menu" : "Tampilkan menu"}
         >
-          <span className="toggle-icon">
-            {sidebarOpen ? (
-              <ChevronLeft size={18} strokeWidth={1.8} />
-            ) : (
-              <ChevronRight size={18} strokeWidth={1.8} />
-            )}
-          </span>
+          {sidebarOpen ? (
+            <ChevronLeft size={20} strokeWidth={2} />
+          ) : (
+            <ChevronRight size={20} strokeWidth={2} />
+          )}
         </button>
-        <div className="top-header-title">
-          <div className="top-village-name">Sistem Manajemen Desa Sugihan</div>
-          <div className="top-village-meta">Kec. Winong, Kab. Pati, Jawa Tengah</div>
+        <div>
+          <div className="text-lg font-bold text-green-700">Sistem Manajemen Desa Sugihan</div>
+          <div className="text-sm text-gray-500">Kec. Winong, Kab. Pati, Jawa Tengah</div>
         </div>
       </div>
-      <div className="top-header-right">
-        <div className="profile-wrapper" ref={profileRef}>
-          <button
-            type="button"
-            className="profile-trigger"
-            onClick={() => setProfileOpen((open) => !open)}
-          >
-            <span className="profile-avatar">
-              <User size={18} />
-            </span>
-          </button>
-          {profileOpen && (
-            <div className="profile-menu">
-              <div className="profile-info">
-                <div className="profile-name">{userName}</div>
-                <div className="profile-role">Operator Sistem</div>
-              </div>
-              <button type="button" className="profile-menu-item">
-                Lihat Profil
-              </button>
-              <button
-                type="button"
-                className="profile-menu-item profile-menu-logout"
-                onClick={onLogout}
-              >
-                Keluar
-              </button>
+      <div className="relative" ref={profileRef}>
+        <button
+          type="button"
+          className="flex items-center gap-2 p-2 rounded-full bg-green-100 hover:bg-green-200 text-green-700"
+          onClick={() => setProfileOpen((open) => !open)}
+        >
+          <span className="profile-avatar">
+            <User size={20} />
+          </span>
+        </button>
+        {profileOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-10">
+            <div className="px-4 py-3 border-b border-gray-100">
+              <div className="font-semibold text-green-700">{userName}</div>
+              <div className="text-xs text-gray-500">Operator Sistem</div>
             </div>
-          )}
-        </div>
+            <button type="button" className="w-full text-left px-4 py-2 hover:bg-green-50 text-gray-700">
+              Lihat Profil
+            </button>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold"
+              onClick={onLogout}
+            >
+              Keluar
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
