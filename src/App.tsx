@@ -1,11 +1,20 @@
 import { useState, useMemo } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import "./style.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { LoginPage } from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
+import SKTMPage from "./pages/letter/SKTMPage";
+import UserIndexPage from "./pages/user/UserIndexPage";
 import { Sidebar } from "./components/Sidebar";
 import { TopHeader } from "./components/TopHeader";
 import { Card } from "./components/ui/card";
@@ -54,12 +63,13 @@ const MENU_ICONS: Record<string, LucideIcon> = {
 };
 
 function AppLayout({ onLogout }: { onLogout: () => void }) {
-  const [activeMenu, setActiveMenu] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const currentMenu = useMemo(
-    () => MENUS.find((m) => m.id === activeMenu),
-    [activeMenu]
+    () => MENUS.find((m) => location.pathname.includes(m.id)),
+    [location.pathname],
   );
 
   return (
@@ -67,13 +77,10 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
       {sidebarOpen && (
         <Sidebar
           menus={MENUS}
-          activeMenu={activeMenu}
-          onSelectMenu={setActiveMenu}
+          activeMenu={currentMenu?.id || ""}
+          onSelectMenu={(menuId) => navigate(`/${menuId}`)}
           onLogout={onLogout}
-          menuIcons={(() => {
-            console.log("MENU_ICONS:", MENU_ICONS); // Debugging log
-            return MENU_ICONS;
-          })()}
+          menuIcons={MENU_ICONS}
         />
       )}
 
@@ -94,44 +101,56 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
           </header>
 
           {/* CONTENT */}
-          {activeMenu === "dashboard" && (
-            <Card title="Dashboard">
-              <p>Ringkasan data desa akan tampil di sini.</p>
-            </Card>
-          )}
-
-          {activeMenu === "kependudukan" && (
-            <Card title="Data Warga">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nama</TableHead>
-                    <TableHead>NIK</TableHead>
-                    <TableHead>Gender</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Contoh Warga</TableCell>
-                    <TableCell>3378xxxxxxxx</TableCell>
-                    <TableCell>L</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Card>
-          )}
-
-          {activeMenu === "persuratan" && (
-            <Card title="Persuratan">
-              <p>Daftar layanan surat akan tampil di sini.</p>
-            </Card>
-          )}
-
-          {activeMenu === "pengaturan" && (
-            <Card title="Pengaturan">
-              <p>Pengaturan sistem aplikasi.</p>
-            </Card>
-          )}
+          <Routes>
+            <Route
+              path="dashboard"
+              element={
+                <Card title="Dashboard">
+                  <p>Ringkasan data desa akan tampil di sini.</p>
+                </Card>
+              }
+            />
+            <Route
+              path="kependudukan"
+              element={
+                <Card title="Data Warga">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nama</TableHead>
+                        <TableHead>NIK</TableHead>
+                        <TableHead>Gender</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Contoh Warga</TableCell>
+                        <TableCell>3378xxxxxxxx</TableCell>
+                        <TableCell>L</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Card>
+              }
+            />
+            <Route
+              path="persuratan"
+              element={
+                <Card title="Persuratan">
+                  <p>Daftar layanan surat akan tampil di sini.</p>
+                </Card>
+              }
+            />
+            <Route
+              path="pengaturan"
+              element={
+                <Card title="Pengaturan">
+                  <p>Pengaturan sistem aplikasi.</p>
+                </Card>
+              }
+            />
+            <Route path="user" element={<UserIndexPage />} />
+          </Routes>
         </main>
       </div>
     </div>
@@ -150,6 +169,8 @@ export default function App() {
             element={<LoginPage onLoginSuccess={() => setIsLoggedIn(true)} />}
           />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/users" element={<UserIndexPage />} />
+          <Route path="/persuratan" element={<SKTMPage />} />
 
           <Route
             path="/*"

@@ -33,6 +33,11 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
       toast.success(<ToastrSuccess message={successMsg} />, {
         className: "toastify-success",
       });
+      const token = res?.data?.data?.token;
+      if (token) {
+        localStorage.setItem("authToken", token);
+      }
+      console.log("Token yang diterima:", token);
       onLoginSuccess();
       navigate("/");
     } catch (err: any) {
