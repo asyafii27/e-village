@@ -9,14 +9,14 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { toast } from "react-toastify";
-import { ToastrError, ToastrSuccess } from "../../components/ui/Toastr";
+import { ToastrError } from "../../components/ui/Toastr";
 import { Breadcrumb } from "../../components/ui/Breadcrumb";
 import { useDebounce } from "use-debounce";
 import { Eraser } from "lucide-react";
 import { Store } from "lucide-react";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+// const API_BASE_URL =
+//   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 const UserIndexPage: React.FC = () => {
   const [users, setUsers] = useState([]);
