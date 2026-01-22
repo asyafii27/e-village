@@ -51,7 +51,7 @@ const MENUS = [
   },
   { id: "persuratan", label: "Persuratan", description: "Layanan surat desa" },
   { id: "pengaturan", label: "Pengaturan", description: "Pengaturan sistem" },
-  { id: "user", label: "Pengguna", description: "Daftar Pengguna" },
+  { id: "user", label: "Pengguna"},
 ];
 
 const MENU_ICONS: Record<string, LucideIcon> = {
@@ -93,12 +93,12 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
         />
 
         <main className="flex-1 p-8">
-          <header className="mb-6">
+          {/* <header className="mb-6">
             <h1 className="text-2xl font-bold text-green-700">
               {currentMenu?.label}
             </h1>
             <p className="text-gray-600">{currentMenu?.description}</p>
-          </header>
+          </header> */}
 
           {/* CONTENT */}
           <Routes>
