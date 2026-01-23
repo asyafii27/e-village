@@ -15,6 +15,7 @@ import { LoginPage } from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import SKTMPage from "./pages/letter/SKTMPage";
 import UserIndexPage from "./pages/user/UserIndexPage";
+import ResidentIndexPage from "./pages/resident/ResidentIndexPage";
 import { Sidebar } from "./components/Sidebar";
 import { TopHeader } from "./components/TopHeader";
 import { Card } from "./components/ui/card";
@@ -51,7 +52,7 @@ const MENUS = [
   },
   { id: "persuratan", label: "Persuratan", description: "Layanan surat desa" },
   { id: "pengaturan", label: "Pengaturan", description: "Pengaturan sistem" },
-  { id: "user", label: "Pengguna"},
+  { id: "user", label: "Pengguna" },
 ];
 
 const MENU_ICONS: Record<string, LucideIcon> = {
@@ -110,29 +111,7 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
                 </Card>
               }
             />
-            <Route
-              path="kependudukan"
-              element={
-                <Card title="Data Warga">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Nama</TableHead>
-                        <TableHead>NIK</TableHead>
-                        <TableHead>Gender</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell>Contoh Warga</TableCell>
-                        <TableCell>3378xxxxxxxx</TableCell>
-                        <TableCell>L</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </Card>
-              }
-            />
+            <Route path="kependudukan" element={<ResidentIndexPage />} />
             <Route
               path="persuratan"
               element={
@@ -170,6 +149,7 @@ export default function App() {
           />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/users" element={<UserIndexPage />} />
+          <Route path="/residents" element={<ResidentIndexPage />} />
           <Route path="/persuratan" element={<SKTMPage />} />
 
           <Route

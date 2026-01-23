@@ -40,12 +40,12 @@ const UserIndexPage: React.FC = () => {
             page_size: rowsPerPage,
             sort_by: "id",
             sort_order: "desc",
-            global_search: debouncedSearchQuery, // Send search query as global_search parameter
+            global_search: debouncedSearchQuery,
           },
         });
 
         setUsers(response.data.data || []);
-        setTotalUsers(response.data.meta.total || 0); // Update total users from meta
+        setTotalUsers(response.data.meta.total || 0);
       } catch (err: any) {
         const message =
           err?.response?.data?.message ||
@@ -63,7 +63,7 @@ const UserIndexPage: React.FC = () => {
     fetchUsers();
   }, [currentPage, rowsPerPage, debouncedSearchQuery]);
 
-  const totalPages = Math.ceil(totalUsers / rowsPerPage); // Calculate total pages from meta
+  const totalPages = Math.ceil(totalUsers / rowsPerPage);
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
@@ -84,7 +84,7 @@ const UserIndexPage: React.FC = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to the first page when a new search query is entered
+    setCurrentPage(1);
   };
 
   return (
