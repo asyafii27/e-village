@@ -158,19 +158,19 @@ const UserIndexPage: React.FC = () => {
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   } hover:bg-green-100`}
                 >
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4 py-1">
                     {(currentPage - 1) * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4 py-1">
                     {user.name}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4 py-1">
                     {user.email}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4 py-1">
                     {new Date(user.created_at).toLocaleString()}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4 py-1">
                     {new Date(user.updated_at).toLocaleString()}
                   </TableCell>
                 </TableRow>

@@ -12,7 +12,10 @@ import { toast } from "react-toastify";
 import { ToastrError } from "../../components/ui/Toastr";
 import { Breadcrumb } from "../../components/ui/Breadcrumb";
 import { useDebounce } from "use-debounce";
-import { Eraser, Store, User } from "lucide-react";
+import { Eraser, Store, User, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
+import ResidentCreatePage from "./ResidentCreatePage";
 
 const ResidentIndexPage: React.FC = () => {
   const [residents, setResidentUsers] = useState([]);
@@ -23,6 +26,8 @@ const ResidentIndexPage: React.FC = () => {
   const [totalResidents, setTotalResidents] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
+  const navigate = useNavigate();
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
@@ -85,6 +90,10 @@ const ResidentIndexPage: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const handleAddResident = () => {
+    setOpenCreateModal(true);
+  };
+
   return (
     <div className="p-6">
       <Breadcrumb
@@ -94,7 +103,21 @@ const ResidentIndexPage: React.FC = () => {
         ]}
       />
       <div className="bg-white shadow-sm rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-4">Data Kependudukan</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Data Kependudukan</h1>
+          <Dialog open={openCreateModal} onOpenChange={setOpenCreateModal}>
+            <DialogTrigger asChild>
+              <button
+                className="flex items-center bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                <Plus className="mr-2" /> Tambah Data
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl">
+              <ResidentCreatePage onSuccess={() => { setOpenCreateModal(false); setCurrentPage(1); }} />
+            </DialogContent>
+          </Dialog>
+        </div>
         <div className="flex items-center mb-4">
           <input
             type="text"
@@ -168,35 +191,35 @@ const ResidentIndexPage: React.FC = () => {
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   } hover:bg-green-100`}
                 >
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {(currentPage - 1) * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.full_name}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.nik}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.gender}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.place_of_birth}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
-                    {new Date(resident.date_of_birth).toLocaleString()}
+                  <TableCell className="border border-black px-4">
+                    {new Date(resident.date_of_birth).toLocaleDateString("id-ID")}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.rt}/
                     {resident.rw}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.religion || "-"}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.marital_status || "-"}
                   </TableCell>
-                  <TableCell className="border border-black px-4 py-2">
+                  <TableCell className="border border-black px-4">
                     {resident.formal_foto ? (
                       <img
                         src={`${API_BASE_URL}/${resident.formal_foto}`}
