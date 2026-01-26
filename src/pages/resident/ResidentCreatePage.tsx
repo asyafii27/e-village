@@ -49,7 +49,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
       <form onSubmit={handleSubmit(handleAddResident)}>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Nama Lengkap <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Nama Lengkap <span className="text-red-600">*</span></label>
             <input
               {...register("full_name")}
               type="text"
@@ -59,7 +59,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">NIK <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">NIK <span className="text-red-600">*</span></label>
             <input
               {...register("nik")}
               type="text"
@@ -69,24 +69,29 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Jenis Kelamin <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Jenis Kelamin <span className="text-red-600">*</span></label>
             <select {...register("gender")} className="border border-green-500 focus:border-green-700 focus:border-2 focus:ring-2 focus:ring-green-500 focus:outline-none rounded px-4 py-1 w-full" required>
               <option value="L">Laki-laki</option>
               <option value="P">Perempuan</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium">Agama <span className="text-red-600">*</span></label>
-            <input
+            <label className="block text-sm font-medium mb-1">Agama <span className="text-red-600">*</span></label>
+            <select
               {...register("religion")}
-              type="text"
-              placeholder="Contoh: Islam"
               className="border border-green-500 focus:border-green-700 focus:border-2 focus:ring-2 focus:ring-green-500 focus:outline-none rounded px-4 py-1 w-full"
               required
-            />
+            >
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Konghucu">Konghucu</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium">Tempat Lahir <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Tempat Lahir <span className="text-red-600">*</span></label>
             <input
               {...register("place_of_birth")}
               type="text"
@@ -96,7 +101,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Tanggal Lahir <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Tanggal Lahir <span className="text-red-600">*</span></label>
             <Popover open={openDate} onOpenChange={setOpenDate}>
               <PopoverTrigger asChild>
                 <input
@@ -120,27 +125,29 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
             </Popover>
           </div>
           <div>
-            <label className="block text-sm font-medium">RT <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">RT <span className="text-red-600">*</span></label>
             <input
-              {...register("rt")}
-              type="text"
-              placeholder="Contoh: 01"
+              {...register("rt", { valueAsNumber: true })}
+              type="number"
+              placeholder="Contoh: 1"
               className="border border-green-500 focus:border-green-700 focus:border-2 focus:ring-2 focus:ring-green-500 focus:outline-none rounded px-4 py-1 w-full"
               required
+              min="1"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">RW <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">RW <span className="text-red-600">*</span></label>
             <input
-              {...register("rw")}
-              type="text"
-              placeholder="Contoh: 02"
+              {...register("rw", { valueAsNumber: true })}
+              type="number"
+              placeholder="Contoh: 2"
               className="border border-green-500 focus:border-green-700 focus:border-2 focus:ring-2 focus:ring-green-500 focus:outline-none rounded px-4 py-1 w-full"
               required
+              min="1"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Desa <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Desa <span className="text-red-600">*</span></label>
             <input
               {...register("village")}
               type="text"
@@ -150,17 +157,18 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({ onSuccess }) =>
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Status Perkawinan <span className="text-red-600">*</span></label>
-            <input
+            <label className="block text-sm font-medium mb-1">Status Perkawinan <span className="text-red-600">*</span></label>
+            <select
               {...register("marital_status")}
-              type="text"
-              placeholder="Contoh: Belum Kawin"
               className="border border-green-500 focus:border-green-700 focus:border-2 focus:ring-2 focus:ring-green-500 focus:outline-none rounded px-4 py-1 w-full"
               required
-            />
+            >
+              <option value="Belum Kawin">Belum Kawin</option>
+              <option value="Kawin">Kawin</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium">Foto <span className="text-red-600">*</span></label>
+            <label className="block text-sm font-medium mb-1">Foto <span className="text-red-600">*</span></label>
             <input
               {...register("formal_foto")}
               type="file"
