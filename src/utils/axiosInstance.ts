@@ -23,3 +23,16 @@ axiosInstance.interceptors.request.use(
 );
 
 export default axiosInstance;
+
+// Add a response interceptor to handle unauthorized token
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message = error?.response?.data?.message;
+    if (message === "Unauthorized: token tidak valid") {
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
