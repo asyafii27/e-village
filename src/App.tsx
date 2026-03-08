@@ -12,7 +12,6 @@ import "./style.css";
 
 import { LoginPage } from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import SKTMPage from "./pages/letter/SKTMPage";
 import AppLayout from "./pages/layout/AppLayout";
 
 export default function App() {
@@ -46,9 +45,6 @@ export default function App() {
             element={<LoginPage onLoginSuccess={handleLoginSuccess} />}
           />
           <Route path="/register" element={<RegisterPage />} />
-
-          {/* PUBLIC */}
-          <Route path="/persuratan" element={<SKTMPage />} />
 
           {/* PROTECTED */}
           <Route

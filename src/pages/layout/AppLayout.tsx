@@ -74,14 +74,7 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
               }
             />
             <Route path="kependudukan" element={<ResidentIndexPage />} />
-            <Route
-              path="persuratan"
-              element={
-                <Card title="Persuratan">
-                  <p>Daftar layanan surat akan tampil di sini.</p>
-                </Card>
-              }
-            />
+            <Route path="persuratan" element={<SKTMPage />} />
             <Route
               path="pengaturan"
               element={
@@ -91,7 +84,6 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
               }
             />
             <Route path="user" element={<UserIndexPage />} />
-            <Route path="sktm" element={<SKTMPage />} />
           </Routes>
         </main>
       </div>
