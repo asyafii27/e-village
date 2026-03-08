@@ -9,13 +9,15 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { toast } from "react-toastify";
-import { ToastrError } from "../../components/ui/Toastr";
+import { ToastrError, ToastrSuccess } from "../../components/ui/Toastr";
 import { Breadcrumb } from "../../components/ui/Breadcrumb";
 import { useDebounce } from "use-debounce";
 import { Eraser, Store, User, Plus, Eye, Pencil, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
 import ResidentCreatePage from "./ResidentCreatePage";
+import ResidentDetailModal from "./ResidentDetailModal";
+import ResidentEditModal from "./ResidentEditModal";
 
 const ResidentIndexPage: React.FC = () => {
   const [residents, setResidentUsers] = useState([]);
@@ -29,6 +31,10 @@ const ResidentIndexPage: React.FC = () => {
   const navigate = useNavigate();
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [selectedResident, setSelectedResident] = useState<any | null>(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
@@ -67,7 +73,7 @@ const ResidentIndexPage: React.FC = () => {
     };
 
     fetchResidents();
-  }, [currentPage, rowsPerPage, debouncedSearchQuery]);
+  }, [currentPage, rowsPerPage, debouncedSearchQuery, refreshKey]);
 
   const totalPages = Math.ceil(totalResidents / rowsPerPage);
 
@@ -187,6 +193,12 @@ const ResidentIndexPage: React.FC = () => {
                   Status Perkawinan
                 </TableHead>
                 <TableHead className="fpnt-nornal border border-black px-4 py-2">
+                  Provinsi Lahir
+                </TableHead>
+                <TableHead className="fpnt-nornal border border-black px-4 py-2">
+                  Kabupaten Lahir
+                </TableHead>
+                <TableHead className="fpnt-nornal border border-black px-4 py-2">
                   Foto
                 </TableHead>
                 <TableHead className="fpnt-nornal border border-black px-4 py-2 text-center">
@@ -228,6 +240,12 @@ const ResidentIndexPage: React.FC = () => {
                     {resident.marital_status || "-"}
                   </TableCell>
                   <TableCell className="border border-black px-4">
+                    {resident.birth_province?.name || "-"}
+                  </TableCell>
+                  <TableCell className="border border-black px-4">
+                    {resident.birth_city?.name || "-"}
+                  </TableCell>
+                  <TableCell className="border border-black px-4">
                     {resident.formal_foto && !imageErrors[resident.id] ? (
                       <img
                         src={
@@ -258,7 +276,8 @@ const ResidentIndexPage: React.FC = () => {
                         className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
                         title="Detail data"
                         onClick={() => {
-                          console.log("Detail resident", resident.id);
+                          setSelectedResident(resident);
+                          setOpenDetailModal(true);
                         }}
                       >
                         <Eye className="w-4 h-4" />
@@ -268,7 +287,8 @@ const ResidentIndexPage: React.FC = () => {
                         className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
                         title="Edit data"
                         onClick={() => {
-                          console.log("Edit resident", resident.id);
+                          setSelectedResident(resident);
+                          setOpenEditModal(true);
                         }}
                       >
                         <Pencil className="w-4 h-4" />
@@ -278,7 +298,29 @@ const ResidentIndexPage: React.FC = () => {
                         className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
                         title="Hapus data"
                         onClick={() => {
-                          console.log("Hapus resident", resident.id);
+                          if (!window.confirm("Yakin ingin menghapus data ini?")) {
+                            return;
+                          }
+
+                          axiosInstance
+                            .delete(`/residents/${resident.id}`)
+                            .then(() => {
+                              toast.success(
+                                <ToastrSuccess message="Data berhasil dihapus" />,
+                                { className: "toastify-success" },
+                              );
+                              setRefreshKey((prev) => prev + 1);
+                            })
+                            .catch((err: any) => {
+                              const message =
+                                err?.response?.data?.message ||
+                                err?.response?.data?.error ||
+                                "Gagal menghapus data";
+                              toast.error(
+                                <ToastrError message={message} />,
+                                { className: "toastify-error" },
+                              );
+                            });
                         }}
                       >
                         <Trash className="w-4 h-4" />
@@ -337,6 +379,20 @@ const ResidentIndexPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <ResidentDetailModal
+        open={openDetailModal}
+        onOpenChange={setOpenDetailModal}
+        resident={selectedResident}
+      />
+      <ResidentEditModal
+        open={openEditModal}
+        onOpenChange={setOpenEditModal}
+        resident={selectedResident}
+        onSuccess={() => {
+          setOpenEditModal(false);
+          setRefreshKey((prev) => prev + 1);
+        }}
+      />
     </div>
   );
 };

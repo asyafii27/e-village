@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+import { ToastrError, ToastrSuccess } from "../../components/ui/Toastr";
 import Select from "react-select";
 import {
   Popover,
@@ -81,7 +82,9 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
         console.log("provinceOptions", options);
       })
       .catch(() => {
-        toast.error("Gagal mengambil data provinsi");
+        toast.error(<ToastrError message="Gagal mengambil data provinsi" />, {
+          className: "toastify-error",
+        });
       })
       .finally(() => setLoadingProvinces(false));
   }, []);
@@ -107,7 +110,10 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
         setCityOptions(options);
       })
       .catch(() => {
-        toast.error("Gagal mengambil data kota/kabupaten");
+        toast.error(
+          <ToastrError message="Gagal mengambil data kota/kabupaten" />,
+          { className: "toastify-error" },
+        );
       })
       .finally(() => setLoadingCities(false));
   }, [selectedProvince, setValue, token]);
@@ -145,7 +151,10 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
         },
       });
 
-      toast.success("Data berhasil ditambahkan");
+      toast.success(
+        <ToastrSuccess message="Data berhasil ditambahkan" />,
+        { className: "toastify-success" },
+      );
       reset();
       if (onSuccess) onSuccess();
     } catch (error: any) {
@@ -169,7 +178,9 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
         }
       }
 
-      toast.error(errorMessage);
+      toast.error(<ToastrError message={errorMessage} />, {
+        className: "toastify-error",
+      });
     }
   };
 
