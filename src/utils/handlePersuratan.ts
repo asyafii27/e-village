@@ -3,7 +3,8 @@ const API_BASE_URL =
 
 
 export function handlePersuratan() {
-    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+    // Samakan dengan key yang digunakan saat login dan axiosInstance
+    const token = localStorage.getItem("authToken");
 
     if (!token) {
         console.error("Token not found in localStorage");
@@ -11,9 +12,9 @@ export function handlePersuratan() {
         return;
     }
 
-    console.log("Token found:", token); // Log the token for debugging
+    console.log("Token found:", token);
 
-    fetch(`${API_BASE_URL}/test-print/generate-test-print-pdf`, {
+    fetch(`${API_BASE_URL}/test-print`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`,
