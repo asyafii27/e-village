@@ -35,7 +35,7 @@ export function TopHeader({
     <header className="w-full bg-white shadow flex items-center justify-between px-6 py-4">
       <div className="flex items-center gap-4">
         <button
-          className="p-2 rounded hover:bg-green-100 text-green-700"
+          className="p-2 rounded hover:bg-green-100 text-green-700 transition-colors duration-300 ease-in-out"
           type="button"
           onClick={onToggleSidebar}
           title={sidebarOpen ? "Sembunyikan menu" : "Tampilkan menu"}

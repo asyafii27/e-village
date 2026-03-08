@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
 import { Sidebar } from "../../components/Sidebar";
 import { LayoutDashboard, Users, FileText, Settings } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 const MENU_ICONS: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
   kependudukan: Users,
@@ -39,15 +40,20 @@ function AppLayout({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      {sidebarOpen && (
+      <div
+        className={`shrink-0 transition-all duration-300 ease-in-out overflow-hidden ${
+          sidebarOpen ? "w-64" : "w-0"
+        }`}
+      >
         <Sidebar
           menus={MENUS}
           activeMenu={currentMenu?.id || ""}
           onSelectMenu={(menuId) => navigate(`/${menuId}`)}
           onLogout={onLogout}
           menuIcons={MENU_ICONS}
+          className="h-full"
         />
-      )}
+      </div>
 
       <div className="flex-1 flex flex-col">
         <TopHeader

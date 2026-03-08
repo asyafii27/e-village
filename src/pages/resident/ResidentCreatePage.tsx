@@ -11,15 +11,26 @@ import {
 import { Calendar } from "../../components/ui/calendar";
 import { format } from "date-fns";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { LoadingSpinner } from "../../components/ui/LoadingSpinner";
+import { UploadCloud } from "lucide-react";
 
 interface ResidentCreatePageProps {
   onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
   onSuccess,
+  onCancel,
 }) => {
-  const { register, handleSubmit, reset, setValue, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { isSubmitting },
+  } = useForm();
   const [date, setDate] = useState<Date | undefined>();
   const [openDate, setOpenDate] = useState(false);
   const [provinceOptions, setProvinceOptions] = useState<any[]>([]);
@@ -30,6 +41,29 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
   const [loadingCities, setLoadingCities] = useState(false);
   // Ambil token dari localStorage
   const token = localStorage.getItem("authToken");
+
+  // Pantau nilai form untuk mengontrol disabled button
+  const formValues = watch();
+  const selectedPhoto = formValues.formal_foto?.[0];
+  const isFormComplete = Boolean(
+    formValues.full_name &&
+      formValues.nik &&
+      formValues.gender &&
+      formValues.religion &&
+      formValues.rt !== undefined &&
+      formValues.rt !== null &&
+      formValues.rt !== "" &&
+      formValues.rw !== undefined &&
+      formValues.rw !== null &&
+      formValues.rw !== "" &&
+      formValues.village &&
+      formValues.marital_status &&
+      formValues.birth_province_code &&
+      formValues.birth_city_code &&
+      formValues.formal_foto &&
+      formValues.formal_foto.length > 0 &&
+      date,
+  );
 
   // Fetch provinces saat mount
   useEffect(() => {
@@ -57,7 +91,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
     if (!selectedProvince) {
       setCityOptions([]);
       setSelectedCity(null);
-      setValue("city_code", "");
+      setValue("birth_city_code", "");
       return;
     }
     setLoadingCities(true);
@@ -82,10 +116,25 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
     try {
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
-        if (key !== "date_of_birth") {
-          formData.append(key, data[key]);
+        if (key === "date_of_birth") {
+          return;
         }
+
+        if (key === "formal_foto") {
+          const files = data[key];
+          if (files && files.length > 0) {
+            formData.append("formal_foto", files[0]);
+          }
+          return;
+        }
+
+        formData.append(key, data[key]);
       });
+
+      // Isi place_of_birth otomatis dari nama kota lahir yang dipilih
+      if (selectedCity?.label) {
+        formData.append("place_of_birth", selectedCity.label);
+      }
       // Tambahkan date_of_birth dari state date
       if (date) {
         formData.append("date_of_birth", date.toISOString().split("T")[0]);
@@ -99,17 +148,39 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
       toast.success("Data berhasil ditambahkan");
       reset();
       if (onSuccess) onSuccess();
-    } catch (error) {
-      toast.error("Gagal menambahkan data");
+    } catch (error: any) {
+      const apiError = error?.response?.data;
+
+      let errorMessage = "Gagal menambahkan data";
+
+      if (apiError) {
+        if (typeof apiError.message === "string" && apiError.message.trim()) {
+          errorMessage = apiError.message;
+        } else if (
+          apiError.errors &&
+          typeof apiError.errors === "object" &&
+          Object.keys(apiError.errors).length > 0
+        ) {
+          const firstKey = Object.keys(apiError.errors)[0];
+          const fieldMessage = apiError.errors[firstKey];
+          if (typeof fieldMessage === "string" && fieldMessage.trim()) {
+            errorMessage = fieldMessage;
+          }
+        }
+      }
+
+      toast.error(errorMessage);
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-2">Tambah Data Kependudukan</h1>
+    <div className="p-4 md:p-6">
+      <h1 className="text-xl md:text-2xl font-bold mb-2">
+        Tambah Data Kependudukan
+      </h1>
       <p className="text-sm text-red-600 mb-4">* wajib diisi</p>
       <form onSubmit={handleSubmit(handleAddResident)}>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Provinsi */}
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -120,15 +191,17 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
               value={selectedProvince}
               onChange={(option) => {
                 setSelectedProvince(option);
-                setValue("province_code", option ? option.value : "");
+                setValue("birth_province_code", option ? option.value : "");
                 setSelectedCity(null);
-                setValue("city_code", "");
+                setValue("birth_city_code", "");
               }}
               isLoading={loadingProvinces}
               placeholder="Pilih Provinsi"
               isClearable
               classNamePrefix="react-select"
             />
+            {/* Hidden input supaya nilai ikut terkirim lewat react-hook-form */}
+            <input type="hidden" {...register("birth_province_code")} />
           </div>
           {/* Kota/Kabupaten */}
           <div>
@@ -140,7 +213,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
               value={selectedCity}
               onChange={(option) => {
                 setSelectedCity(option);
-                setValue("city_code", option ? option.value : "");
+                setValue("birth_city_code", option ? option.value : "");
               }}
               isLoading={loadingCities}
               placeholder={
@@ -152,6 +225,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
               isClearable
               classNamePrefix="react-select"
             />
+            <input type="hidden" {...register("birth_city_code")} />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -209,18 +283,6 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Tempat Lahir <span className="text-red-600">*</span>
-            </label>
-            <input
-              {...register("place_of_birth")}
-              type="text"
-              placeholder="Contoh: Pati"
-              className="border border-gray-300 focus:border-green-500 focus:border-2 focus:ring-2 focus:ring-green-500/50 focus:outline-none rounded px-4 py-1 w-full"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">
               Tanggal Lahir <span className="text-red-600">*</span>
             </label>
             <Popover open={openDate} onOpenChange={setOpenDate}>
@@ -261,6 +323,7 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
               placeholder="Contoh: 1"
               className="border border-gray-300 focus:border-green-500 focus:border-2 focus:ring-2 focus:ring-green-500/50 focus:outline-none rounded px-4 py-1 w-full"
               min="1"
+              required
             />
           </div>
           <div>
@@ -297,36 +360,61 @@ const ResidentCreatePage: React.FC<ResidentCreatePageProps> = ({
               className="border border-gray-300 focus:border-green-500 focus:border-2 focus:ring-2 focus:ring-green-500/50 focus:outline-none rounded px-4 py-1 w-full"
               required
             >
-              <option value="Belum Kawin">Belum Kawin</option>
-              <option value="Kawin">Kawin</option>
+              <option value="belum_kawin">Belum Kawin</option>
+              <option value="kawin">Kawin</option>
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
               Foto <span className="text-red-600">*</span>
             </label>
-            <input
-              {...register("formal_foto")}
-              type="file"
-              className="border border-gray-300 focus:border-green-500 focus:border-2 focus:ring-2 focus:ring-green-500/50 focus:outline-none rounded px-4 py-1 w-full"
-              accept="image/*"
-              required
-            />
+            <div className="relative border-2 border-dashed border-gray-300 rounded-md px-4 py-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-green-500 hover:bg-green-50 transition-colors">
+              <input
+                {...register("formal_foto")}
+                type="file"
+                accept="image/*"
+                required
+                className="absolute inset-0 opacity-0 cursor-pointer"
+              />
+              <UploadCloud className="text-green-600 mb-2" size={24} />
+              <p className="text-sm font-medium text-gray-700">
+                Tarik & letakkan foto di sini
+              </p>
+              <p className="text-xs text-gray-500">
+                atau klik untuk memilih file
+              </p>
+              {selectedPhoto && (
+                <p className="mt-2 text-xs text-gray-600 truncate w-full">
+                  File terpilih: {selectedPhoto.name}
+                </p>
+              )}
+            </div>
           </div>
         </div>
         <div className="mt-4 flex justify-end">
           <button
-            type="reset"
-            onClick={() => reset()}
+            type="button"
+            onClick={() => {
+              reset();
+              if (onCancel) onCancel();
+            }}
             className="bg-gray-300 text-black px-4 py-1 rounded mr-2 hover:bg-gray-400"
           >
-            Reset
+            Kembali
           </button>
           <button
             type="submit"
-            className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+            className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            disabled={isSubmitting || !isFormComplete}
           >
-            Simpan
+            {isSubmitting ? (
+              <>
+                <LoadingSpinner size={16} />
+                <span>Menyimpan...</span>
+              </>
+            ) : (
+              <span>Simpan</span>
+            )}
           </button>
         </div>
       </form>

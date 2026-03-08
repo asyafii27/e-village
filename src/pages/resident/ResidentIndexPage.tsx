@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { ToastrError } from "../../components/ui/Toastr";
 import { Breadcrumb } from "../../components/ui/Breadcrumb";
 import { useDebounce } from "use-debounce";
-import { Eraser, Store, User, Plus } from "lucide-react";
+import { Eraser, Store, User, Plus, Eye, Pencil, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "../../components/ui/dialog";
 import ResidentCreatePage from "./ResidentCreatePage";
@@ -28,8 +28,11 @@ const ResidentIndexPage: React.FC = () => {
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const navigate = useNavigate();
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  const FILE_BASE_URL = API_BASE_URL.replace(/\/_?api\/?$/, "");
 
   useEffect(() => {
     const fetchResidents = async () => {
@@ -102,9 +105,11 @@ const ResidentIndexPage: React.FC = () => {
           { label: "Kependudukan", href: "/residents" },
         ]}
       />
-      <div className="bg-white shadow-sm rounded-lg p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Data Kependudukan</h1>
+      <div className="mt-4 bg-white border border-gray-200 shadow-sm rounded-2xl p-6">
+        <div className="flex justify-between items-center pb-4 border-b border-gray-100 mb-4">
+          <h1 className="text-2xl font-semibold text-green-700">
+            Data Kependudukan
+          </h1>
           <Dialog open={openCreateModal} onOpenChange={setOpenCreateModal}>
             <DialogTrigger asChild>
               <button
@@ -113,8 +118,14 @@ const ResidentIndexPage: React.FC = () => {
                 <Plus className="mr-2" /> Tambah Data
               </button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl">
-              <ResidentCreatePage onSuccess={() => { setOpenCreateModal(false); setCurrentPage(1); }} />
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <ResidentCreatePage
+                onSuccess={() => {
+                  setOpenCreateModal(false);
+                  setCurrentPage(1);
+                }}
+                onCancel={() => setOpenCreateModal(false)}
+              />
             </DialogContent>
           </Dialog>
         </div>
@@ -164,9 +175,6 @@ const ResidentIndexPage: React.FC = () => {
                   Gender
                 </TableHead>
                 <TableHead className="fpnt-nornal border border-black px-4 py-2">
-                  Tempat
-                </TableHead>
-                <TableHead className="fpnt-nornal border border-black px-4 py-2">
                   Tanggal Lahir
                 </TableHead>
                 <TableHead className="fpnt-nornal border border-black px-4 py-2">
@@ -180,6 +188,9 @@ const ResidentIndexPage: React.FC = () => {
                 </TableHead>
                 <TableHead className="fpnt-nornal border border-black px-4 py-2">
                   Foto
+                </TableHead>
+                <TableHead className="fpnt-nornal border border-black px-4 py-2 text-center">
+                  Aksi
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -204,9 +215,6 @@ const ResidentIndexPage: React.FC = () => {
                     {resident.gender}
                   </TableCell>
                   <TableCell className="border border-black px-4">
-                    {resident.place_of_birth}
-                  </TableCell>
-                  <TableCell className="border border-black px-4">
                     {new Date(resident.date_of_birth).toLocaleDateString("id-ID")}
                   </TableCell>
                   <TableCell className="border border-black px-4">
@@ -220,17 +228,62 @@ const ResidentIndexPage: React.FC = () => {
                     {resident.marital_status || "-"}
                   </TableCell>
                   <TableCell className="border border-black px-4">
-                    {resident.formal_foto ? (
+                    {resident.formal_foto && !imageErrors[resident.id] ? (
                       <img
-                        src={`${API_BASE_URL}/${resident.formal_foto}`}
+                        src={
+                          typeof resident.formal_foto === "string" &&
+                          resident.formal_foto.startsWith("http")
+                            ? resident.formal_foto
+                            : `${FILE_BASE_URL}/${resident.formal_foto}`
+                        }
                         alt="Foto"
                         className="w-12 h-12 object-cover rounded-full mx-auto cursor-pointer"
+                        onError={() =>
+                          setImageErrors((prev) => ({
+                            ...prev,
+                            [resident.id]: true,
+                          }))
+                        }
                       />
                     ) : (
                       <div className="flex justify-center items-center w-12 h-12 bg-gray-200 rounded-full">
                         <User className="text-gray-400 w-6 h-6" />
                       </div>
                     )}
+                  </TableCell>
+                  <TableCell className="border border-black px-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
+                        title="Detail data"
+                        onClick={() => {
+                          console.log("Detail resident", resident.id);
+                        }}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
+                        title="Edit data"
+                        onClick={() => {
+                          console.log("Edit resident", resident.id);
+                        }}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-green-100 hover:bg-green-200 text-green-700 rounded p-1 transition-colors"
+                        title="Hapus data"
+                        onClick={() => {
+                          console.log("Hapus resident", resident.id);
+                        }}
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
